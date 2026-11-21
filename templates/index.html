@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>STEREO Fit Calculator</title>
+
+    <meta name="theme-color" content="#101112">
+    <meta name="description" content="STEREO Fit Calculator">
+
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="icon" type="image/png" sizes="192x192"
+        href="{{ url_for('static', filename='icon-192.png') }}">
+    <link rel="apple-touch-icon"
+        href="{{ url_for('static', filename='icon-192.png') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header class="brand">
+
+            <div class="brand-identity">
+                <span class="brand-name">STEREO</span>
+                <span class="brand-divider"></span>
+                <span class="brand-subtitle">FIT CALCULATOR</span>
+            </div>
+
+            <button type="button" class="theme-button" id="themeToggle"
+                aria-label="Cambiar tema" title="Cambiar tema">
+                ☾
+            </button>
+
+        </header>
+
+        {% if etapa == "registro" %}
+
+            <section class="content">
+
+                <p class="eyebrow">BIENVENIDO</p>
+
+                <h1>Comencemos.</h1>
+
+                <p class="description">
+                    Creá tu usuario para continuar.
+                </p>
+
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+
+                <form method="POST">
+
+                    <label for="usuario">Usuario</label>
+
+                    <div class="animated-field">
+                        <input type="text" id="usuario" name="usuario"
+                            placeholder="Nombre de usuario" required>
+            
+
+                    <label for="contrasena">Contraseña</label>
+
+                    <div class="password-field">
+
+                        <input type="password" id="contrasena" name="contrasena"
+                            placeholder="Ingresá tu contraseña" required>
+
+                        <div class="password-visual" aria-hidden="true"></div>
+
+                        <button type="button" class="eye-button"
+                            aria-label="Mantener presionado para ver la contraseña">
+                            ◉
+                        </button>
+
+                    </div>
+
+                    <label for="verificacion">Verificar contraseña</label>
+
+                    <div class="password-field">
+
+                        <input type="password" id="verificacion" name="verificacion"
+                            placeholder="Repetí tu contraseña" required>
+
+                        <div class="password-visual" aria-hidden="true"></div>
+
+                        <button type="button" class="eye-button"
+                            aria-label="Mantener presionado para ver la contraseña">
+                            ◉
+                        </button>
+
+                    </div>
+
+                    <button type="submit" name="verificar" class="primary-button">
+                        Continuar
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+            </section>
+
+        {% elif etapa == "imc" %}
+
+            <section class="content">
+
+                <p class="eyebrow">TU ESPACIO PERSONAL</p>
+
+                <h1>Hola, {{ Usuario }}.</h1>
+
+                <p class="description">
+                    Ingresá tus datos para calcular tu IMC.
+                </p>
+
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+
+                <form method="POST">
+
+                    <label for="edad">Edad</label>
+
+                    <div class="animated-field">
+                        <input type="number" id="edad" name="edad"
+                            min="1" max="120"
+                            placeholder="Edad en años" required>
+                     
+
+                    <label for="altura">Altura</label>
+
+                    <div class="animated-field">
+                        <input type="text" id="altura" name="altura"
+                            inputmode="decimal"
+                            placeholder="Ejemplo: 1.85"
+                            autocomplete="off"
+                            maxlength="4"
+                            required>
+                   
+                    <label for="peso">Peso</label>
+
+                    <div class="animated-field">
+                        <input type="number" id="peso" name="peso"
+                            step="0.1" min="0.1"
+                            placeholder="Peso en kilogramos" required>
+                   
+
+                    <button type="submit" name="calcular" class="primary-button">
+                        Calcular IMC
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+            </section>
+
+        {% elif etapa == "resultado" %}
+
+            <section class="content result">
+
+                <p class="eyebrow">RESULTADO</p>
+
+                <h1>STEREO Fit</h1>
+
+                <p class="description">
+                    Hola, {{ Usuario }}.
+                </p>
+
+                <div class="imc-card">
+
+                    <p class="imc-label">TU ÍNDICE DE MASA CORPORAL</p>
+
+                    <h2>{{ "%.2f"|format(IMC) }}</h2>
+
+                    <p class="imc-unit">IMC</p>
+
+                </div>
+
+                <div class="evaluation">
+
+                    {% if edad < 20 %}
+                        <h3>Evaluación por edad</h3>
+                    {% else %}
+                        <h3>Evaluación orientativa para adultos:</h3>
+                    {% endif %}
+
+                    <p>{{ clasificacion }}</p>
+
+                </div>
+
+                <p class="disclaimer">
+                    *Este resultado es orientativo y no constituye un diagnóstico médico.
+                </p>
+
+                <button type="button" class="secondary-button logout-button"
+                    id="openLogoutModal">
+                    Cerrar sesión
+                </button>
+
+            </section>
+
+        {% endif %}
+
+        <footer>
+            <span>STEREO</span>
+            <span>SIMPLICITY ON ACTION</span>
+            <span class="credits">Created by TIMI © 2026</span>
+        </footer>
+
+    </main>
+
+
+    <!-- MODAL DE CIERRE DE SESIÓN -->
+
+    <div class="modal-overlay" id="logoutModal" aria-hidden="true">
+
+        <section class="modal-card" role="dialog"
+            aria-modal="true" aria-labelledby="modalTitle">
+
+            <div class="modal-icon">↗</div>
+
+            <p class="eyebrow">CONFIRMACIÓN</p>
+
+            <h2 id="modalTitle">¿Cerrar sesión?</h2>
+
+            <p class="modal-description">
+                ¿Estás seguro de que querés cerrar tu sesión?
+            </p>
+
+            <div class="modal-actions">
+
+                <form method="POST" action="{{ url_for('cerrar_sesion') }}">
+                    <button type="submit" class="confirm-logout">
+                        Cerrar sesión
+                    </button>
+                </form>
+
+                <button type="button" class="cancel-logout" id="cancelLogout">
+                    Cancelar
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <script>
+
+        // MODO CLARO Y OSCURO
+
+        const themeToggle = document.getElementById("themeToggle");
+
+        function aplicarTema(tema) {
+
+            document.documentElement.setAttribute("data-theme", tema);
+
+            themeToggle.textContent = tema === "dark" ? "☀" : "☾";
+
+            localStorage.setItem("stereo-theme", tema);
+
+        }
+
+        const temaGuardado = localStorage.getItem("stereo-theme");
+
+        aplicarTema(temaGuardado || "light");
+
+        themeToggle.addEventListener("click", function () {
+
+            const temaActual = document.documentElement.getAttribute("data-theme");
+
+            aplicarTema(temaActual === "dark" ? "light" : "dark");
+
+        });
+
+
+        // CONTRASEÑA ANIMADA
+
+        document.querySelectorAll(".password-field").forEach(function (campo) {
+
+            const input = campo.querySelector("input");
+            const visual = campo.querySelector(".password-visual");
+            const boton = campo.querySelector(".eye-button");
+
+            let temporizador;
+
+            function dibujarPassword(mostrarUltima = false) {
+
+                clearTimeout(temporizador);
+                visual.innerHTML = "";
+
+                const texto = input.value;
+
+                [...texto].forEach(function (letra, indice) {
+
+                    const caracter = document.createElement("span");
+                    caracter.className = "password-char";
+
+                    const visible = document.createElement("span");
+                    visible.className = "visible-char";
+                    visible.textContent = letra;
+
+                    const oculto = document.createElement("span");
+                    oculto.className = "hidden-char";
+                    oculto.textContent = "•";
+
+                    caracter.appendChild(visible);
+                    caracter.appendChild(oculto);
+
+                    visual.appendChild(caracter);
+
+                    if (mostrarUltima && indice === texto.length - 1) {
+
+                        temporizador = setTimeout(function () {
+                            caracter.classList.add("masked");
+                        }, 650);
+
+                    } else {
+
+                        caracter.classList.add("masked");
+
+                    }
+
+                });
+
+            }
+
+            input.addEventListener("input", function (evento) {
+
+                const nuevaLetra =
+                    evento.inputType === "insertText" &&
+                    evento.data !== null;
+
+                dibujarPassword(nuevaLetra);
+
+            });
+
+            function mostrarPassword() {
+
+                clearTimeout(temporizador);
+
+                campo.classList.add("show-password");
+                input.type = "text";
+
+            }
+
+            function ocultarPassword() {
+
+                campo.classList.remove("show-password");
+                input.type = "password";
+
+                dibujarPassword(false);
+
+            }
+
+            boton.addEventListener("pointerdown", function (evento) {
+
+                evento.preventDefault();
+                mostrarPassword();
+
+            });
+
+            boton.addEventListener("pointerup", ocultarPassword);
+            boton.addEventListener("pointerleave", ocultarPassword);
+            boton.addEventListener("pointercancel", ocultarPassword);
+            boton.addEventListener("blur", ocultarPassword);
+
+            boton.addEventListener("keydown", function (evento) {
+
+                if (evento.key === " " || evento.key === "Enter") {
+
+                    evento.preventDefault();
+                    mostrarPassword();
+
+                }
+
+            });
+
+            boton.addEventListener("keyup", function (evento) {
+
+                if (evento.key === " " || evento.key === "Enter") {
+                    ocultarPassword();
+                }
+
+            });
+
+            dibujarPassword(false);
+
+        });
+
+
+        // ALTURA AUTOMÁTICA
+
+        const alturaInput = document.getElementById("altura");
+
+        if (alturaInput) {
+
+            alturaInput.addEventListener("input", function () {
+
+                let valor = alturaInput.value.replace(",", ".");
+
+                valor = valor.replace(/[^0-9.]/g, "");
+
+                const partes = valor.split(".");
+
+                if (partes.length > 2) {
+                    valor = partes[0] + "." + partes.slice(1).join("");
+                }
+
+                if (!valor.includes(".") && valor.length >= 3) {
+                    valor = valor.slice(0, 1) + "." + valor.slice(1, 3);
+                }
+
+                if (valor.includes(".")) {
+                    const partesFinales = valor.split(".");
+                    valor = partesFinales[0] + "." + partesFinales[1].slice(0, 2);
+                }
+
+                alturaInput.value = valor;
+
+            });
+
+        }
+
+
+        // ANIMACIÓN DE ESCRITURA PARA CAMPOS NORMALES
+
+        document.querySelectorAll(".animated-field").forEach(function (campo) {
+
+            const input = campo.querySelector("input");
+            const visual = campo.querySelector(".typing-visual");
+
+            function dibujarTexto() {
+
+                visual.innerHTML = "";
+
+                [...input.value].forEach(function (letra, indice) {
+
+                    const caracter = document.createElement("span");
+
+                    caracter.className = "typing-char";
+                    caracter.textContent = letra;
+
+                    caracter.style.animationDelay = (indice * 15) + "ms";
+
+                    visual.appendChild(caracter);
+
+                });
+
+            }
+
+            input.addEventListener("input", dibujarTexto);
+            input.addEventListener("change", dibujarTexto);
+
+            dibujarTexto();
+
+        });
+
+
+        // MODAL DE CIERRE DE SESIÓN
+
+        const logoutModal = document.getElementById("logoutModal");
+        const openLogoutModal = document.getElementById("openLogoutModal");
+        const cancelLogout = document.getElementById("cancelLogout");
+
+        function abrirModal() {
+
+            logoutModal.classList.add("active");
+            logoutModal.setAttribute("aria-hidden", "false");
+            document.body.classList.add("modal-open");
+
+            cancelLogout.focus();
+
+        }
+
+        function cerrarModal() {
+
+            logoutModal.classList.remove("active");
+            logoutModal.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("modal-open");
+
+            if (openLogoutModal) {
+                openLogoutModal.focus();
+            }
+
+        }
+
+        if (openLogoutModal) {
+            openLogoutModal.addEventListener("click", abrirModal);
+        }
+
+        if (cancelLogout) {
+            cancelLogout.addEventListener("click", cerrarModal);
+        }
+
+        logoutModal.addEventListener("click", function (evento) {
+
+            if (evento.target === logoutModal) {
+                cerrarModal();
+            }
+
+        });
+
+        document.addEventListener("keydown", function (evento) {
+
+            if (evento.key === "Escape" && logoutModal.classList.contains("active")) {
+                cerrarModal();
+            }
+
+        });
+
+
+        // SERVICE WORKER PWA
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener("load", function () {
+
+                navigator.serviceWorker.register("/sw.js")
+                    .then(function (registro) {
+                        console.log("STEREO PWA preparada:", registro.scope);
+                    })
+                    .catch(function (error) {
+                        console.log("Error al registrar PWA:", error);
+                    });
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
