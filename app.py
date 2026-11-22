@@ -3,6 +3,14 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+from flask import send_from_directory
+
+@app.route('/googlec6f36be820f01405.html')
+def google_verification():
+    return send_from_directory(
+        app.root_path,
+        'googlec6f36be820f01405.html'
+    )
 
 # Cargar variables del archivo .env
 load_dotenv()
